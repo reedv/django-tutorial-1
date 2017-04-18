@@ -54,6 +54,7 @@ ROOT_URLCONF = 'mysite.urls'
 
 TEMPLATES = [
     {
+        # DjangoTemplates looks for a "templates" subdirectory in each of the INSTALLED_APPS.
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
         'APP_DIRS': True,
