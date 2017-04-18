@@ -21,7 +21,7 @@ class Question(models.Model):
         """
         return whether this question was published with 1 day
         """
-        return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
+        return timezone.now() - datetime.timedelta(days=1) <= self.pub_date <= timezone.now()
 
 
 class Choice(models.Model):

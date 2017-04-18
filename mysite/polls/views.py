@@ -3,6 +3,8 @@ from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.template import loader
 from django.urls import reverse
 from django.views import generic
+from django.utils import timezone
+from django.db.models import Count
 
 # Create your views here.
 # A view function, or view for short, is simply a Python function that takes a Web request and returns a Web response.
@@ -23,8 +25,11 @@ class IndexView(generic.ListView):  # generic.ListView abstracts concepts of dis
     context_object_name = 'latest_question_list'
 
     def get_queryset(self):
-        """Return the last five published questions."""
-        return Question.objects.order_by('-pub_date')[:5]
+        """Return the last five published questions (that have associated choices)."""
+        return Question.objects.annotate(choice_count=Count('choice')).filter(
+            pub_date__lte=timezone.now(),  # see https://docs.djangoproject.com/en/dev/topics/db/queries/#field-lookups
+            choice_count__gte=1
+        ).order_by('-pub_date')[:5]
 
 
 class DetailView(generic.DetailView):  # generic.DetailView abstracts concepts of display detail pg. for a type of obj.
@@ -41,6 +46,10 @@ class DetailView(generic.DetailView):  # generic.DetailView abstracts concepts o
     and latest_question_list context variables. For DetailView the question variable is provided automatically –
     since we’re using a Django model (Question), Django is able to determine an appropriate name for the context variable.
     """
+
+    def get_queryset(self):
+        """ Excludes any questions that aren't published yet """
+        return Question.objects.filter(pub_date__lte=timezone.now())
 
 
 class ResultsView(generic.DetailView):
