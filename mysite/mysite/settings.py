@@ -56,7 +56,9 @@ TEMPLATES = [
     {
         # DjangoTemplates looks for a "templates" subdirectory in each of the INSTALLED_APPS.
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        # DIRS is a list of filesystem directories to check when loading Django templates
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        # look for a templates/ subdirectory within each application package
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

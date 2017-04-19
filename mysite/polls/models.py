@@ -22,6 +22,10 @@ class Question(models.Model):
         return whether this question was published with 1 day
         """
         return timezone.now() - datetime.timedelta(days=1) <= self.pub_date <= timezone.now()
+    # set some method properties (for Question admin's ModelAdmin list_display)
+    was_published_recently.admin_order_field = 'pub_date'
+    was_published_recently.boolean = True
+    was_published_recently.short_description = 'Published recently?'
 
 
 class Choice(models.Model):
